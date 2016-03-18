@@ -1,0 +1,125 @@
+/*==============================================
+[Magenta color stylesheet magenta.css]
+
+Author:	SINDEVO.COM - Smart Internet Development
+Template:	Mobix - Mobile Web APP Template
+================================================*/
+
+/*===============================================*/
+/* MAIN COLOR */
+/*===============================================*/	
+a, blockquote span {
+/*color: #9c27b0;*/
+color: #000;
+}
+a.button_full, a.button_small, .call_button a{
+background-color:#9c27b0; 
+}
+.button {
+border: 1px solid #9c27b0;
+color: #9c27b0;
+}
+.button.active {
+background: #FDD835;border-color: #fdd835;color:#212121;
+font-size: 1em;
+font-weight: normal;
+}
+#pages_maincontent h3{
+color:#9c27b0;
+}
+.photo-categories a.active{
+background-color:#7b1fa2;
+}
+.post_date{
+color:#9c27b0;
+}
+.list-block .swipeout-actions-left a,
+.list-block .swipeout-actions-right a {
+background: #9c27b0;
+}
+.contactform input.form_submit, button.form_submit, .loginform input.form_submit, .commentform input.form_submit, .contactform a.form_submit{ 
+background-color:#e1bee7;
+}
+/*===============================================*/
+/* HOME BG AND PAGES HEADER BG */
+/*===============================================*/	
+.homepage{
+/*background: url(../../images/colors/magenta/bg.jpg) no-repeat center center;*/
+background-color: #f9f9f9;
+background-attachment:fixed;
+-webkit-background-size: 100%; 
+-moz-background-size: 100%;
+-o-background-size: 100%;
+background-size: 100%;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover; 
+background-size: cover;
+}
+.navbarpages{
+/*background:url(../../images/colors/magenta/header.jpg) no-repeat center center;*/
+  /*background-color: #9c27b0;*/
+  background-color: #7b1fa2;
+}
+/*===============================================*/
+/* MAIN NAV LINKS */
+/*===============================================*/	
+.main-nav ul li{
+background: #9c27b0;
+border-bottom:1px #692c46 solid;
+}
+.main-nav ul li a{
+/*color:#c6a0b1;*/
+color: #fff;
+}
+
+/*===============================================*/
+/* INNER NAV LINKS */
+/*===============================================*/	
+.inner-nav ul li{
+background: #9c27b0;
+border-bottom:1px #692c46 solid;
+}
+
+#empty{
+	background: #7b1fa2;
+	border-bottom:1px #7b1fa2 solid;
+}
+
+
+.inner-nav ul li a{
+/*color:#c6a0b1;*/
+color: #fff;
+}
+/*===============================================*/
+/* POPUPS AND TOOLBAR */
+/*===============================================*/	
+.popup{
+/*background: #49182d;*/
+background-color: #7b1fa2;
+}
+.popup-login, .popup-signup, .popup-forgot{
+background-color:#7b1fa2;
+}
+.toolbar:before {
+  background-color: #7b1fa2;
+}
+/*===============================================*/
+/* LEFT AND RIGHT SLIDE PANEL */
+/*===============================================*/	
+.panel {
+/*background:#9c27b0;*/
+background: #7b1fa2;
+}
+.user-nav ul li, ul.popular_posts li{
+border-bottom:1px #9b4d5b solid;
+}
+/* MENU OPENER ICON */
+ul.toolbar_icons li.menuicon{
+background-color:#7b1fa2;
+}
+
+/* PANEL CLOSE BUTTON */
+.close_popup_button a{
+background-color:#9c27b0;
+}
