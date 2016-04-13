@@ -26,6 +26,10 @@ var Login_service = function() {
 		var request = url + "login/login_forum_member";
         return $.ajax({url: request, data: form_data, type: 'POST', processData: false,contentType: false});
     }
+    this.login_automatic_to_forum = function(email_address_old,member_number_old) {
+		var request = url + "login/login_forum_member";
+        return $.ajax({url: request, data: {email_address :email_address_old ,member_number: member_number_old}, type: 'POST', processData: false,contentType: false});
+    }
     this.getProfileDetails = function() {
 		var request = url + "login/get_client_profile";
         return $.ajax({url: request});
@@ -34,7 +38,140 @@ var Login_service = function() {
 }
 
 
+/* Function to check for network connectivity */
+document.addEventListener("deviceready", onDeviceReady, false);
 
+// PhoneGap is ready
+//
+function onDeviceReady() 
+{
+    
+    cordova.plugins.backgroundMode.setDefaults({ title:'ICPAK LIVE', text:'ICPAK LIVE', silent: true});
+    
+    //check if background action is enabled
+    var enabled = cordova.plugins.backgroundMode.isEnabled();
+    if(enabled === false)
+    {
+        // Enable background mode
+        cordova.plugins.backgroundMode.enable();
+    }
+
+    // Called when background mode has been activated
+    cordova.plugins.backgroundMode.onactivate = function () {
+        
+        //clear other timeouts
+        //clearTimeout(all_message_timeout);
+        //clearTimeout(single_message_timeout);
+        
+    };
+    
+    cordova.plugins.backgroundMode.onfailure = function(errorCode) {
+        cordova.plugins.backgroundMode.configure({
+                        text:errorCode
+                    });        
+    };
+}
+
+$(document).ready(function(){
+	var level = window.localStorage.getItem("level_id");
+	if(level == 1)
+	{
+		// junior tab be open for comment
+		$( "#junior" ).css( "display", 'inline-block' );
+		$( "#junior-button" ).css( "display", 'none' );
+
+		$( "#senior-message" ).html( "<p>You can only make comments on Juniors' Forum</p>");
+		$( "#badge-response" ).html( "<p>You can only make comments on Juniors' Forum </p>");
+
+	}
+	else if(level == 2)
+	{
+		// senior tab be open for comment
+		$( "#senior" ).css( "display", 'inline-block' );
+		$( "#senior-button" ).css( "display", 'none' );
+
+		$( "#junior-message" ).html( "<p>You can only make comments on Seniors' Forum</p>");
+		$( "#badge-response" ).html( "<p>You can only make comments on Seniors' Forum </p>");
+	}
+	else if(level == 3)
+	{
+		// young professionals tab be open for comment 
+		$( "#professionals" ).css( "display", 'inline-block' );
+		$( "#professionals-button" ).css( "display", 'none' );
+
+		$( "#senior-message" ).html( "<p>You can only make comments on Young Professionals Forum</p>");
+		$( "#badge-response" ).html( '<div class="alert alert-danger center-align">You can only make comments on Young Professionals Forum </div>"');
+	}
+	//set local variables for future auto login
+
+	
+	
+	
+	automatic_login();
+});
+
+function automatic_login()
+{
+	$( "#loader-wrapper" ).removeClass( "display_none" );
+
+	
+	var service = new Login_service();
+	service.initialize().done(function () {
+		console.log("Service initialized");
+	});
+
+	//get member's credentials
+	var email_address = window.localStorage.getItem("email_address");
+	var member_number = window.localStorage.getItem("member_number");
+	
+	service.login_automatic_to_forum(email_address, member_number).done(function (employees) {
+		var data = jQuery.parseJSON(employees);//alert(email+' '+password);
+		
+		if(data.message == "success")
+		{
+			if(data.level == 1)
+			{
+				// junior tab be open for comment
+				$( "#junior" ).css( "display", 'inline-block' );
+				$( "#junior-button" ).css( "display", 'none' );
+
+				$( "#senior-message" ).html( "<p>You can only make comments on Juniors' Forum</p>");
+				$( "#badge-response" ).html( "<p>You can only make comments on Juniors' Forum </p>");
+
+			}
+			else if(data.level == 2)
+			{
+				// senior tab be open for comment
+				$( "#senior" ).css( "display", 'inline-block' );
+				$( "#senior-button" ).css( "display", 'none' );
+
+				$( "#junior-message" ).html( "<p>You can only make comments on Seniors' Forum</p>");
+				$( "#badge-response" ).html( "<p>You can only make comments on Seniors' Forum </p>");
+			}
+			else if(data.level == 3)
+			{
+				// young professionals tab be open for comment 
+				$( "#professionals" ).css( "display", 'inline-block' );
+				$( "#professionals-button" ).css( "display", 'none' );
+
+				$( "#senior-message" ).html( "<p>You can only make comments on Young Professionals Forum</p>");
+				$( "#badge-response" ).html( '<div class="alert alert-danger center-align">You can only make comments on Young Professionals Forum </div>"');
+			}
+			//set local variables for future auto login
+
+			window.localStorage.setItem("level_id", data.level);
+			window.localStorage.setItem("email_address", $("input[name=email_address]").val());
+			window.localStorage.setItem("member_number", $("input[name=member_number]").val());
+
+		}
+		else
+		{
+			$("#response").html('<div class="alert alert-danger center-align">'+data.result+'</div>').fadeIn( "slow");
+		}
+		
+		$( "#loader-wrapper" ).addClass( "display_none" );
+	});
+}
 
 
 //Register member
@@ -195,7 +332,7 @@ $(document).on("submit","form#login_forum_member",function(e)
 					$( "#junior-button" ).css( "display", 'none' );
 
 					$( "#senior-message" ).html( "<p>You can only make comments on Juniors' Forum</p>");
-					$( "#professionals-message" ).html( "<p>You can only make comments on Juniors' Forum </p>");
+					$( "#badge-response" ).html( "<p>You can only make comments on Juniors' Forum </p>");
 
 				}
 				else if(data.level == 2)
@@ -203,22 +340,29 @@ $(document).on("submit","form#login_forum_member",function(e)
 					// senior tab be open for comment
 					$( "#senior" ).css( "display", 'inline-block' );
 					$( "#senior-button" ).css( "display", 'none' );
+
 					$( "#junior-message" ).html( "<p>You can only make comments on Seniors' Forum</p>");
-					$( "#professionals-message" ).html( "<p>You can only make comments on Seniors' Forum </p>");
+					$( "#badge-response" ).html( "<p>You can only make comments on Seniors' Forum </p>");
 				}
 				else if(data.level == 3)
 				{
 					// young professionals tab be open for comment 
 					$( "#professionals" ).css( "display", 'inline-block' );
 					$( "#professionals-button" ).css( "display", 'none' );
+
 					$( "#senior-message" ).html( "<p>You can only make comments on Young Professionals Forum</p>");
-					$( "#professionals-message" ).html( "<p>You can only make comments on Young Professionals Forum </p>");
+					$( "#badge-response" ).html( '<div class="alert alert-danger center-align">You can only make comments on Young Professionals Forum </div>"');
 				}
 				//set local variables for future auto login
 
+				window.localStorage.setItem("level_id", data.level);
 				window.localStorage.setItem("email_address", $("input[name=email_address]").val());
 				window.localStorage.setItem("member_number", $("input[name=member_number]").val());
-				$("#login_response").html('<div class="alert alert-danger center-align">'+"Welcome back, to make comments to young professionals press continue "+'</div>').fadeIn( "slow");
+
+				$('.popup-login').removeClass('modal-in');
+				$('.popup-login').css('display', 'none');
+				$('.popup-overlay').removeClass('modal-overlay-visible');
+				// $("#login_response").html('<div class="alert alert-danger center-align">'+"Welcome back, to make comments to young professionals press continue "+'</div>').fadeIn( "slow");
 
 			}
 			else
@@ -450,6 +594,8 @@ $$(document).on('pageInit', '.page[data-page="juniors"]', function (e)
 			// $( "#news-of-icpak" ).addClass( "display_block" );
 			$( "#junior_news" ).html( data.result );
 			$( "#loader-wrapper" ).addClass( "display_none" );
+			$( "#junior-button" ).addClass( "display_none" );
+			$( "#junior-message" ).addClass( "display_block" );
 			window.localStorage.setItem("junior_news", data.result);
 			//window.localStorage.setItem("total_news", data.total_received);
 		}
